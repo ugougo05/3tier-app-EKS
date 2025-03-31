@@ -27,7 +27,7 @@ jobs:
       - name: Build and push vote app
         uses: docker/build-push-action@v6
         with:
-          context: ./home/elvis-allwise/EKS-3tier-app/ironhack-project/vote
+          context:
           push: true
           tags: |
             ${{ secrets.DOCKER_USERNAME }}/my-vote:${{ env.IMAGE_TAG }}
