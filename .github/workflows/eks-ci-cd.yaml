@@ -30,8 +30,8 @@ jobs:
           context: ./vote
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/myvote:${{ env.IMAGE_TAG }}
-            ${{ secrets.DOCKER_USERNAME }}/myvote:latest
+            ${{ secrets.DOCKER_USERNAME }}/my-vote:${{ env.IMAGE_TAG }}
+            ${{ secrets.DOCKER_USERNAME }}/my-vote:latest
 
       - name: Build and Push Result Image
         uses: docker/build-push-action@v6
