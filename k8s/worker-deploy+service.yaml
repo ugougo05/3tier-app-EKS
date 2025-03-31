@@ -15,7 +15,7 @@ spec:
       containers:
       - name: worker-container
         # Replace with your Docker Hub (or other registry) image
-        image: <your-dockerhub-username>/voting-app-vote:latest
+        image: ugougo05/vote:latest
         ports:
           - containerPort: 80
         env:
