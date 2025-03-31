@@ -24,20 +24,15 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
  
-      - name: Build and push
+      - name: Build and push vote app
         uses: docker/build-push-action@v6
         with:
+          context: ./vote
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/ugougo05/my-vote:${{ env.IMAGE_TAG }}
-            ${{ secrets.DOCKER_USERNAME }}/ugougo05/my-vote:latest
+            ${{ secrets.DOCKER_USERNAME }}/my-vote:${{ env.IMAGE_TAG }}
+            ${{ secrets.DOCKER_USERNAME }}/my-vote:latest
 
-            ${{ secrets.DOCKER_USERNAME }}/ugougo05/my-worker::${{ env.IMAGE_TAG }}
-            ${{ secrets.DOCKER_USERNAME }}/ugougo05/my-worker:latest
-
-            ${{ secrets.DOCKER_USERNAME }}/ugougo05/result:${{ env.IMAGE_TAG }}
-            ${{ secrets.DOCKER_USERNAME }}/ugougo05/result:latest
- 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -51,32 +46,12 @@ jobs:
           chmod +x ./kubectl
           mkdir -p $HOME/bin
           mv ./kubectl $HOME/bin/kubectl
-          echo "::add-path::$HOME/bin"
- 
+          export PATH=$HOME/bin:$PATH
+          echo "$HOME/bin" >> $GITHUB_PATH
+
       - name: Update kubeconfig for EKS
         run: |
           aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name ${{ secrets.AWS_CLUSTER }}
- 
-      - name: Generate the final deployment template
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y gettext-base
-          export IMAGE_NAME="docker.io/${{ secrets.DOCKER_USERNAME }}/ugougo05/my-vote:${{ env.IMAGE_TAG }}"
-          envsubst < k8s/deployment.template.yaml > k8s/vote-deploy+service.yaml
-          echo "k8s/vote-deploy+service.yaml:"
-          cat k8s/vote-deploy+service.yaml
-
-          export IMAGE_NAME="docker.io/${{ secrets.DOCKER_USERNAME }}/ugougo05/my-worker:${{ env.IMAGE_TAG }}"
-          envsubst < k8s/deployment.template.yaml > k8s/result-deploy+service.yaml
-          echo "Final k8s/result-deploy+service.yaml:"
-          cat k8s/result-deploy+service.yaml
-
-          export IMAGE_NAME="docker.io/${{ secrets.DOCKER_USERNAME }}/ugougo05/result:${{ env.IMAGE_TAG }}"
-          envsubst < k8s/deployment.template.yaml > k8s/deployment.yaml
-          echo "Final k8s/worker-deploy+service.yaml:"
-          cat k8s/worker-deploy+service.yaml
- 
- 
  
       - name: Deploy to EKS
         run: |
@@ -86,7 +61,6 @@ jobs:
           kubectl apply -f k8s/worker-deploy+service.yaml
 
       - name: Restart Deployments to Pull Latest Image # Need this because Kubernetes does not automatically pull a new image if the tag remains similar
-
         run: |
           kubectl rollout restart deployment/result-deployment
           kubectl rollout restart deployment/worker-deployment

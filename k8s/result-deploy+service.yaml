@@ -13,16 +13,17 @@ spec:
         app: result
     spec:
       containers:
-      - name: result-container
-        # Replace with your Docker Hub (or other registry) image
-        image: <your-dockerhub-username>/voting-app-vote:latest
-        ports:
-          - containerPort: 80
-        env:
-          - name: DB_HOST
-            value: "postgres-service"  # Reference the service name
-          - name: POSTGRES_PORT
-            value: "6379"
+        - name: result-container
+          # Replace with your Docker Hub (or other registry) image
+          image: <your-dockerhub-username>/result:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DB_HOST
+              value: "postgres-service" # Reference the service name
+            - name: DB_PORT
+              value: "5432" # Postgres runs on 5432, not 6379 (Redis port)
+---
 apiVersion: v1
 kind: Service
 metadata:
