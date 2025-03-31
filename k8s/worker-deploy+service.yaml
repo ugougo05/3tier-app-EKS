@@ -17,7 +17,7 @@ spec:
         # Replace with your Docker Hub (or other registry) image
         image: <your-dockerhub-username>/voting-app-vote:latest
         ports:
-          - containerPort: 
+          - containerPort: 80
         env:
         - name: REDIS_HOST
           value: "redis-service"
