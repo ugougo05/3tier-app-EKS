@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: result-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: result
+  template:
+    metadata:
+      labels:
+        app: result
+    spec:
+      containers:
+      - name: result-container
+        # Replace with your Docker Hub (or other registry) image
+        image: <your-dockerhub-username>/voting-app-vote:latest
+        ports:
+          - containerPort: 80
+        env:
+          - name: DB_HOST
+            value: "postgres-service"  # Reference the service name
+          - name: POSTGRES_PORT
+            value: "6379"
+apiVersion: v1
+kind: Service
+metadata:
+  name: result-service
+spec:
+  selector:
+    app: result
+  ports:
+    - port: 80
+      targetPort: 80
