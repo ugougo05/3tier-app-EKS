@@ -18,19 +18,22 @@ spec:
         image: ugougo05/worker:latest
         ports:
           - containerPort: 80
-        env:
-        - name: REDIS_HOST
-          value: "redis-service"
-        - name: POSTGRES_HOST
-          value: "postgres-service"
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: db-credentials
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-           secretKeyRef:
-            name: db-credentials
-            key: POSTGRES_PASSWORD
-
+  env:
+  - name: REDIS_HOST
+    value: "redis-service"
+  - name: DB_HOST
+    value: "postgres-service"         # Update to your actual service name
+  - name: DB_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: db-credentials
+        key: POSTGRES_USER             # Ensure secret key matches
+  - name: DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: db-credentials
+        key: POSTGRES_PASSWORD         # Ensure secret key matches
+  - name: DB_NAME
+    value: "postgres"                 # Or change if needed
+  - name: REDIS_HOST
+    value: "redis-service" 
