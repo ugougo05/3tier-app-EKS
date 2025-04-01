@@ -35,5 +35,4 @@ spec:
         key: POSTGRES_PASSWORD         # Ensure secret key matches
   - name: DB_NAME
     value: "postgres"                 # Or change if needed
-  - name: REDIS_HOST
-    value: "redis-service" 
+ 
