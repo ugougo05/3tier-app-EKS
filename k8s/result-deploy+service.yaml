@@ -14,36 +14,23 @@ spec:
     spec:
       containers:
         - name: result-container
-          # Replace with your Docker Hub (or other registry) image
-          image: ugougo05/result:latest
+          image: "ugougo05/result:latest"
           ports:
             - containerPort: 80
-      env:
-      - name: PG_HOST
-        value: "postgres-service"  # Reference the service name for PostgreSQL
-      - name: PG_PORT
-        value: "5432"              # PostgreSQL port
-      # Optionally, include other PG_ variables if you want to override them:
-      - name: PG_DATABASE
-        value: "postgres"
-      - name: PG_USER
-        valueFrom:
-          secretKeyRef:
-            name: db-credentials
-            key: POSTGRES_USER
-      - name: PG_PASSWORD
-        valueFrom:
-        secretKeyRef:
-          name: db-credentials
-          key: POSTGRES_PASSWORD
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: result-service
-spec:
-  selector:
-    app: result
-  ports:
-    - port: 80
-      targetPort: 80
+          env:
+            - name: PG_HOST
+              value: "postgres-service"
+            - name: PG_PORT
+              value: "5432"
+            - name: PG_DATABASE
+              value: "postgres"
+            - name: PG_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_USER
+            - name: PG_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: POSTGRES_PASSWORD
